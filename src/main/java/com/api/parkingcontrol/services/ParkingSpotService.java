@@ -32,15 +32,15 @@ public class ParkingSpotService {
 
     }
 
-    private boolean existsByLicensePlateCar(String licensePlateCar) throws Exception {
+    private boolean existsByLicensePlateCar(String licensePlateCar) {
             return parkingSpotRepository.existsByLicensePlateCar(licensePlateCar);
     }
 
-    private boolean existsByParkingSpotNumber(String parkingSpotNumber) throws Exception {
+    private boolean existsByParkingSpotNumber(String parkingSpotNumber) {
         return parkingSpotRepository.existsByParkingSpotNumber(parkingSpotNumber);
     }
 
-    private boolean existsByApartmetAndBlock(String apartment, String block) throws Exception {
+    private boolean existsByApartmetAndBlock(String apartment, String block) {
         return parkingSpotRepository.existsByApartmentAndBlock(apartment,block);
     }
 }
