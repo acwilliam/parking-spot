@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -25,7 +27,7 @@ public class ParkingSpotController {
     }
 
     @PostMapping("/salvar-registro")
-    public ResponseEntity<Object> salvarParkingSpot(@RequestBody @Valid ParkingSpotDto parkingSpotDto){
+    public ResponseEntity<Object> salvarVagas(@RequestBody @Valid ParkingSpotDto parkingSpotDto){
 
         var parKingSpotModel = new ParkingSpotModel();
         BeanUtils.copyProperties(parkingSpotDto,parKingSpotModel);
@@ -38,8 +40,18 @@ public class ParkingSpotController {
         }
 
     }
-    @GetMapping("buscar-vagas")
+    @GetMapping("/buscar-vagas")
     public ResponseEntity<List<ParkingSpotModel>> buscarTodasAsVagas(){
         return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll());
+    }
+    @GetMapping("/id")
+    public ResponseEntity<Object> buscarPorUmaVaga(@RequestHeader(value = "id") @Valid UUID id) throws Exception {
+        Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
+        if (parkingSpotModelOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada");
+        }
+
+        return  ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOptional);
+
     }
 }

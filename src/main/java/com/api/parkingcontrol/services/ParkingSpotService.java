@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ParkingSpotService {
@@ -22,7 +24,7 @@ public class ParkingSpotService {
     public ParkingSpotModel save(ParkingSpotModel parKingSpotModel) throws Exception {
 
         if(existsByLicensePlateCar(parKingSpotModel.getLicensePlateCar())) {
-                throw new Exception("Conflito: License car ja em uso");
+            throw new Exception("Conflito: License car ja em uso");
         }else if (existsByParkingSpotNumber(parKingSpotModel.getParkingSpotNumber())) {
             throw new Exception("Conflito: Vaga ja esta em uso");
         }else if (existsByApartmetAndBlock(parKingSpotModel.getApartment(), parKingSpotModel.getBlock())) {
@@ -47,5 +49,9 @@ public class ParkingSpotService {
 
     public List<ParkingSpotModel> findAll() {
         return parkingSpotRepository.findAll();
+    }
+
+    public Optional<ParkingSpotModel> findById(UUID id) throws Exception {
+        return parkingSpotRepository.findById(id);
     }
 }
