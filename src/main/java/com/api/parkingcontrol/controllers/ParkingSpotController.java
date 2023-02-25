@@ -54,4 +54,14 @@ public class ParkingSpotController {
         return  ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOptional);
 
     }
+
+    @DeleteMapping("/id")
+    public ResponseEntity<Object> deletarUmRegistro(@RequestHeader(value = "id") @Valid UUID id) throws Exception {
+        Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
+        if (parkingSpotModelOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada");
+        }
+        parkingSpotService.delete(parkingSpotModelOptional.get());
+        return  ResponseEntity.status(HttpStatus.OK).body("Vaga deletada com sucesso");
+    }
 }

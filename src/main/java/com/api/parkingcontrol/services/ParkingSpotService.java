@@ -54,4 +54,9 @@ public class ParkingSpotService {
     public Optional<ParkingSpotModel> findById(UUID id) throws Exception {
         return parkingSpotRepository.findById(id);
     }
+
+    @Transactional
+    public void delete(ParkingSpotModel parkingSpotModelOptional) {
+        parkingSpotRepository.deleteById(parkingSpotModelOptional.getId());
+    }
 }
