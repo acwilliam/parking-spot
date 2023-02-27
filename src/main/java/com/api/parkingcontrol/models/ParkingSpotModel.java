@@ -10,6 +10,10 @@ import java.util.UUID;
 public class ParkingSpotModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
