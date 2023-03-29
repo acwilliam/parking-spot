@@ -1,14 +1,15 @@
 package com.api.parkingcontrol.services;
 
-import com.api.parkingcontrol.dtos.UsuarioDto;
 import com.api.parkingcontrol.models.Usuario;
 import com.api.parkingcontrol.repositories.UsuarioRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-public class LoginService {
+public class LoginService implements UserDetailsService {
 
     final UsuarioRepository usuarioRepository;
 
@@ -18,8 +19,12 @@ public class LoginService {
     }
 
 
-    public Optional<Usuario> login(UsuarioDto usuarioDto) throws Exception {
-        return usuarioRepository.findByEmail(usuarioDto.getEmail());
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado para o email: "+ username));
 
+        return new User(usuario.getEmail(), usuario.getPassword(), usuario.isEnabled(),
+                true, true, true, usuario.getAuthorities());
     }
 }

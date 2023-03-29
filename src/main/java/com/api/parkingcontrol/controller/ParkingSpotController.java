@@ -54,7 +54,7 @@ public class ParkingSpotController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vaga não encontrada");
         }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOptional);
+        return  ResponseEntity.status(HttpStatus.OK).body(parkingSpotModelOptional.get());
 
     }
 

@@ -9,11 +9,12 @@ import com.api.parkingcontrol.services.LoginService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*", maxAge = 3600)
@@ -35,21 +36,20 @@ public class CriarUsuarioController {
 
 
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(criarUsuarioService.criarUsuario(usuarioModel));
+            criarUsuarioService.criarUsuario(usuarioModel);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Usuario criado com Sucesso!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsuarioDto usuarioDto) throws Exception {
+    public ResponseEntity<String> login(@RequestBody @Valid UsuarioDto usuarioDto) {
 
-        Optional<Usuario> usuarioOptional= loginService.login(usuarioDto);
+        UserDetails userDetails= loginService.loadUserByUsername(usuarioDto.getEmail());
 
-        if(usuarioOptional.isPresent()) {
-            Usuario usuario = usuarioOptional.get();
-            if (usuario.getPassword().equals(usuarioDto.getPassword()))
-                return ResponseEntity.ok("Login Realizado com Sucesso!");
+        if(new BCryptPasswordEncoder().matches(usuarioDto.getPassword(), userDetails.getPassword())) {
+            return ResponseEntity.ok("Login Realizado com Sucesso!");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou email inválido");
     }
