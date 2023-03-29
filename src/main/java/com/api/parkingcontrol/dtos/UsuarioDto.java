@@ -4,13 +4,11 @@ import javax.validation.constraints.NotBlank;
 
 public class UsuarioDto {
 
-    @NotBlank
     private String name;
     @NotBlank
     private String email;
     @NotBlank
     private String password;
-
 
     public String getName() {
         return name;

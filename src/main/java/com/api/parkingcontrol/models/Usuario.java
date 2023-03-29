@@ -1,11 +1,16 @@
 package com.api.parkingcontrol.models;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 @Entity
 @Table(name = "TB_USUARIO")
-public class Usuario implements Serializable {
+public class Usuario implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,6 +23,17 @@ public class Usuario implements Serializable {
     private String email;
     @Column(nullable = false, unique = false, length =16)
     private String password;
+
+    @ManyToMany
+    @JoinTable(name ="TB_USUARIO_ROLES",
+              joinColumns = @JoinColumn(name = "user_id"),
+              inverseJoinColumns = @JoinColumn(name = "role_id") )
+    private List<RoleModel> roles;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
+    }
 
     public UUID getId() {
         return id;
@@ -43,8 +59,34 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
