@@ -14,10 +14,12 @@ public class RoleModel implements GrantedAuthority, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JoinColumn(name = "role_id")
     private UUID roleId;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
+    @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "role_name")
     private RoleEnum roleName;
 
     @Override
@@ -33,11 +35,11 @@ public class RoleModel implements GrantedAuthority, Serializable {
         this.roleId = roleId;
     }
 
-    public RoleEnum getRoleModel() {
+    public RoleEnum getRoleName() {
         return roleName;
     }
 
-    public void setRoleModel(RoleEnum roleModel) {
-        this.roleName = roleModel;
+    public void setRoleName(RoleEnum roleName) {
+        this.roleName = roleName;
     }
 }
