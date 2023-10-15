@@ -2,6 +2,7 @@ package com.api.parkingcontrol.controller;
 
 import com.api.parkingcontrol.dtos.FuncionarioDto;
 import com.api.parkingcontrol.dtos.RoleDto;
+import com.api.parkingcontrol.dtos.TokenUsuarioResponse;
 import com.api.parkingcontrol.dtos.UsuarioDto;
 import com.api.parkingcontrol.enums.RoleEnum;
 import com.api.parkingcontrol.models.Funcionario;
@@ -57,16 +58,17 @@ public class CriarUsuarioController {
     }
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON)
-    public ResponseEntity<String> login(@RequestBody @Valid UsuarioDto usuarioDto) {
+    public ResponseEntity<TokenUsuarioResponse> login(@RequestBody @Valid UsuarioDto usuarioDto) {
 
         UserDetails userDetails= loginService.loadUserByUsername(usuarioDto.getEmail());
-
+        TokenUsuarioResponse tokenUsuarioResponse = new TokenUsuarioResponse();
         if(new BCryptPasswordEncoder().matches(usuarioDto.getPassword(), userDetails.getPassword())) {
-            String token = JwtUtil.generateToken(usuarioDto.getEmail(),30*60*1000);
-            log.info("Authorization Bearer "+token);
-            return ResponseEntity.ok().header("Authorization", "Bearer " + token).build();
+            tokenUsuarioResponse.setToken(JwtUtil.generateToken(usuarioDto.getEmail(),30*60*1000));
+            log.info("Authorization Bearer "+ tokenUsuarioResponse);
+            return ResponseEntity.ok().body(tokenUsuarioResponse);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou email inválido");
+        tokenUsuarioResponse.setToken("Login ou email inválido");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenUsuarioResponse);
     }
 
     @PostMapping("/pessoas")
